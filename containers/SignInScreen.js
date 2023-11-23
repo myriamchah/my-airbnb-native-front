@@ -2,16 +2,17 @@ import { useNavigation } from "@react-navigation/core";
 import { useState } from "react";
 import axios from "axios";
 import {
-  Image,
   Text,
   TextInput,
   View,
-  TouchableHighlight,
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+import HeaderLogo from "../components/HeaderLogo";
+import Button from "../components/Button";
 
 export default function SignInScreen({ setToken }) {
   const [email, setEmail] = useState("");
@@ -45,14 +46,7 @@ export default function SignInScreen({ setToken }) {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollView}>
-        <View style={styles.view}>
-          <Image
-            source={require("../assets/logo-sm.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.title}>Sign in</Text>
-        </View>
+        <HeaderLogo text="Sign in" />
 
         <View style={styles.view}>
           <TextInput
@@ -75,13 +69,7 @@ export default function SignInScreen({ setToken }) {
             }}
           />
           <Text color="#FF6066">{errorMessage}</Text>
-          <TouchableHighlight
-            style={styles.button}
-            underlayColor="#FF6066"
-            onPress={onSignIn}
-          >
-            <Text style={styles.buttonText}>Sign in</Text>
-          </TouchableHighlight>
+          <Button text="Sign in" onPress={onSignIn} />
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("SignUp");
@@ -111,17 +99,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  logo: {
-    height: 140,
-    width: 140,
-  },
-  title: {
-    color: "gray",
-    fontWeight: "600",
-    fontSize: 24,
-    margin: 24,
-    textAlign: "center",
-  },
   textInput: {
     borderBottomColor: "#FF6066",
     borderBottomWidth: 1,
@@ -129,20 +106,5 @@ const styles = StyleSheet.create({
     margin: 16,
     fontSize: 16,
     paddingBottom: 8,
-  },
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 60,
-    width: "70%",
-    borderColor: "#FF6066",
-    borderWidth: 2,
-    borderRadius: 50,
-    margin: 16,
-  },
-  buttonText: {
-    color: "gray",
-    fontWeight: "500",
-    fontSize: 18,
   },
 });
