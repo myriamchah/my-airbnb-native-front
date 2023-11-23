@@ -1,4 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
+import { useState } from "react";
+import axios from "axios";
 import {
   Image,
   Text,
@@ -12,7 +14,34 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function SignInScreen({ setToken }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigation = useNavigation();
+
+  const onSignIn = async () => {
+    if (email && password) {
+      if (errorMessage) {
+        setErrorMessage("");
+      }
+      try {
+        const { data } = await axios.post(
+          `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/log_in`,
+          {
+            email,
+            password,
+          }
+        );
+        setToken(data.token);
+      } catch (error) {
+        setErrorMessage(error.response.data.error);
+      }
+    } else {
+      setErrorMessage("You must fill in both email and password inputs.");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollView}>
@@ -26,18 +55,30 @@ export default function SignInScreen({ setToken }) {
         </View>
 
         <View style={styles.view}>
-          <TextInput placeholder="email" style={styles.textInput} />
+          <TextInput
+            placeholder="email"
+            value={email}
+            style={styles.textInput}
+            onChangeText={(t) => {
+              setEmail(t);
+              setErrorMessage("");
+            }}
+          />
           <TextInput
             placeholder="password"
+            value={password}
             secureTextEntry={true}
             style={styles.textInput}
+            onChangeText={(t) => {
+              setPassword(t);
+              setErrorMessage("");
+            }}
           />
+          <Text color="#FF6066">{errorMessage}</Text>
           <TouchableHighlight
             style={styles.button}
-            onPress={async () => {
-              const userToken = "secret-token";
-              setToken(userToken);
-            }}
+            underlayColor="#FF6066"
+            onPress={onSignIn}
           >
             <Text style={styles.buttonText}>Sign in</Text>
           </TouchableHighlight>
