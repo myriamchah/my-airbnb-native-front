@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  ImageBackground,
-  Image,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ActivityIndicator, SafeAreaView } from "react-native";
 import axios from "axios";
+
+import RoomInfo from "../components/RoomInfo";
 
 export default function RoomScreen({ route }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +15,6 @@ export default function RoomScreen({ route }) {
           `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/${route.params.id}`
         );
         setRoom(data);
-        console.log(room);
       } catch (error) {
         console.log(error);
       }
@@ -32,32 +24,13 @@ export default function RoomScreen({ route }) {
     fetchData();
   }, []);
 
-  return isLoading ? (
-    <ActivityIndicator />
-  ) : (
+  return (
     <SafeAreaView>
-      <ImageBackground
-        source={{ uri: room.photos[0].url }}
-        style={styles.imageBg}
-      >
-        <Text style={styles.price}>{room.price}€ </Text>
-      </ImageBackground>
-
-      <View style={styles.infoView}>
-        <View>
-          <Text style={styles.title}>{room.title}</Text>
-          <View style={styles.stars}>
-            {displayStars(room.ratingValue)}
-            <Text style={styles.legend}>{room.reviews} reviews</Text>
-          </View>
-        </View>
-        <View>
-          <Image
-            source={{ uri: room.user.account.photo.url }}
-            style={styles.avatar}
-          />
-        </View>
-      </View>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <RoomInfo room={room} fromShow={true} />
+      )}
     </SafeAreaView>
   );
 }
