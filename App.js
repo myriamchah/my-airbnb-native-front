@@ -11,6 +11,7 @@ import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import SplashScreen from "./containers/SplashScreen";
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -85,18 +86,46 @@ export default function App() {
                 >
                   {() => (
                     <Stack.Navigator>
-                      <Stack.Screen name="Home">
+                      <Stack.Screen
+                        name="Home"
+                        options={{
+                          headerTitle: () => (
+                            <Image
+                              source={require("./assets/logo-sm.png")}
+                              style={{ height: 20, width: 20 }}
+                              resizeMode="contain"
+                            />
+                          ),
+                        }}
+                      >
                         {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
 
-                      <Stack.Screen name="Room">
+                      <Stack.Screen
+                        name="Room"
+                        options={{
+                          headerTitle: () => (
+                            <Image
+                              source={require("./assets/logo-sm.png")}
+                              style={{ height: 20, width: 20 }}
+                              resizeMode="contain"
+                            />
+                          ),
+                        }}
+                      >
                         {(props) => <RoomScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen
                         name="Profile"
                         options={{
-                          title: "User Profile",
+                          headerTitle: () => (
+                            <Image
+                              source={require("./assets/logo-sm.png")}
+                              style={{ height: 20, width: 20 }}
+                              resizeMode="contain"
+                            />
+                          ),
                         }}
                       >
                         {() => <ProfileScreen />}
