@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import axios from "axios";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +33,18 @@ export default function HomeScreen() {
 
     fetchData();
   }, []);
+
+  const displayStars = (value) => {
+    const stars = [];
+    for (i = 0; i <= value; i++) {
+      if (i <= value) {
+        stars.push(<AntDesign name="star" size={14} color="#FFB102" key={i} />);
+      } else {
+        stars.push(<AntDesign name="star" size={14} color="grey" key={i} />);
+      }
+    }
+    return stars;
+  };
 
   return isLoading ? (
     <ActivityIndicator />
@@ -58,7 +71,10 @@ export default function HomeScreen() {
               <View style={styles.infoView}>
                 <View>
                   <Text style={styles.title}>{item.title}</Text>
-                  <Text>{item.ratingValue}</Text>
+                  <View style={styles.stars}>
+                    {displayStars(item.ratingValue)}
+                    <Text style={styles.legend}>{item.reviews} reviews</Text>
+                  </View>
                 </View>
                 <View>
                   <Image
@@ -111,5 +127,12 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: -1, height: 2 },
     textShadowRadius: 2,
     textShadowColor: "black",
+  },
+  stars: {
+    flexDirection: "row",
+  },
+  legend: {
+    fontSize: 12,
+    color: "grey",
   },
 });
