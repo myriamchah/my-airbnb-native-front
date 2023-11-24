@@ -1,13 +1,14 @@
-import { AntDesign } from "@expo/vector-icons";
 import { ImageBackground, Image, StyleSheet, Text, View } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import Swiper from "react-native-swiper";
 
 const displayStars = (value) => {
   const stars = [];
-  for (i = 0; i <= value; i++) {
+  for (i = 1; i <= 5; i++) {
     if (i <= value) {
       stars.push(<AntDesign name="star" size={14} color="#FFB102" key={i} />);
     } else {
-      stars.push(<AntDesign name="star" size={14} color="grey" key={i} />);
+      stars.push(<AntDesign name="star" size={14} color="lightgrey" key={i} />);
     }
   }
   return stars;
@@ -16,19 +17,30 @@ const displayStars = (value) => {
 const RoomInfo = ({ room, fromShow }) => {
   return (
     <>
-      <ImageBackground
-        source={{ uri: room.photos[0].url }}
-        style={fromShow ? styles.imageBgShow : styles.imageBgHome}
+      <Swiper
+        autoplay={fromShow}
+        showsPagination={false}
+        style={styles.swiperWrapper(fromShow)}
       >
-        <Text style={styles.price}>{room.price}€ </Text>
-      </ImageBackground>
-
+        {room.photos.map((photo) => (
+          <ImageBackground
+            source={{ uri: photo.url }}
+            style={[
+              fromShow ? styles.imageBgShow : styles.imageBgHome,
+              styles.swiperSlide,
+            ]}
+            key={photo.picture_id}
+          >
+            <Text style={styles.price}>{room.price} € </Text>
+          </ImageBackground>
+        ))}
+      </Swiper>
       <View style={styles.infoView}>
         <View>
           <Text style={styles.title}>{room.title}</Text>
           <View style={styles.stars}>
             {displayStars(room.ratingValue)}
-            <Text style={styles.legend}>{room.reviews} reviews</Text>
+            <Text style={styles.legend}> {room.reviews} reviews</Text>
           </View>
         </View>
         <View>
@@ -82,6 +94,8 @@ const styles = StyleSheet.create({
   },
   stars: {
     flexDirection: "row",
+    paddingVertical: 4,
+    alignItems: "center",
   },
   legend: {
     fontSize: 12,
@@ -89,5 +103,12 @@ const styles = StyleSheet.create({
   },
   desc: {
     padding: 8,
+  },
+  swiperWrapper: (fromShow) => ({
+    height: fromShow ? 240 : 180,
+    borderRadius: fromShow ? 0 : 4,
+  }),
+  swiperSlide: {
+    flex: 1,
   },
 });

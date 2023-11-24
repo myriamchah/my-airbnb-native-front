@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, SafeAreaView } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 import axios from "axios";
 
 import RoomInfo from "../components/RoomInfo";
@@ -25,12 +30,21 @@ export default function RoomScreen({ route }) {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeAreaView}>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <RoomInfo room={room} fromShow={true} />
+        <View style={{ height: 400 }}>
+          <RoomInfo room={room} fromShow={true} />
+        </View>
       )}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeAreaView: {
+    backgroundColor: "white",
+    flex: 1,
+  },
+});
