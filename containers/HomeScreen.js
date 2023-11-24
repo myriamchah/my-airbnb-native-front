@@ -60,14 +60,13 @@ export default function HomeScreen() {
                 navigation.navigate("Room", { id: item._id });
               }}
             >
-              <View>
-                <ImageBackground
-                  source={{ uri: item.photos[0].url }}
-                  style={styles.imageBg}
-                >
-                  <Text style={styles.price}>{item.price}€ </Text>
-                </ImageBackground>
-              </View>
+              <ImageBackground
+                source={{ uri: item.photos[0].url }}
+                style={styles.imageBg}
+              >
+                <Text style={styles.price}>{item.price}€ </Text>
+              </ImageBackground>
+
               <View style={styles.infoView}>
                 <View>
                   <Text style={styles.title}>{item.title}</Text>
