@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/core";
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -14,12 +13,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import HeaderLogo from "../components/HeaderLogo";
 import Button from "../components/Button";
 
-export default function SignInScreen({ setToken }) {
+export default function SignInScreen({ setToken, navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const navigation = useNavigation();
 
   const onSignIn = async () => {
     if (email && password) {

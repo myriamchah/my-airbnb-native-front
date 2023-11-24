@@ -13,7 +13,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import HeaderLogo from "../components/HeaderLogo";
 import Button from "../components/Button";
 
-export default function SignUpScreen({ setToken }) {
+export default function SignUpScreen({ setToken, navigation }) {
   const [account, setAccount] = useState({
     email: "",
     username: "",

@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/core";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -14,10 +13,10 @@ import {
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [rooms, setRooms] = useState([]);
-  const navigation = useNavigation();
+
   useEffect(() => {
     const fetchData = async () => {
       try {

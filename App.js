@@ -57,10 +57,10 @@ export default function App() {
           // No token found, user isn't signed in
           <>
             <Stack.Screen name="SignIn">
-              {() => <SignInScreen setToken={setToken} />}
+              {(props) => <SignInScreen setToken={setToken} {...props} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {() => <SignUpScreen setToken={setToken} />}
+              {(props) => <SignUpScreen setToken={setToken} {...props} />}
             </Stack.Screen>
           </>
         ) : (
@@ -86,11 +86,11 @@ export default function App() {
                   {() => (
                     <Stack.Navigator>
                       <Stack.Screen name="Home">
-                        {() => <HomeScreen />}
+                        {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen name="Room">
-                        {() => <RoomScreen />}
+                        {(props) => <RoomScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen
