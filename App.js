@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./containers/HomeScreen";
 import ProfileScreen from "./containers/ProfileScreen";
+import AroundMeScreen from "./containers/AroundMeScreen";
 import RoomScreen from "./containers/RoomScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
@@ -129,6 +130,34 @@ export default function App() {
                         }}
                       >
                         {() => <ProfileScreen />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="TabAroundMe"
+                  options={{
+                    tabBarLabel: "AroundMe",
+                    tabBarIcon: ({ color, size }) => (
+                      <Ionicons name={"ios-locate"} size={size} color={color} />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator>
+                      <Stack.Screen
+                        name="AroundMe"
+                        options={{
+                          headerTitle: () => (
+                            <Image
+                              source={require("./assets/logo-sm.png")}
+                              style={{ height: 20, width: 20 }}
+                              resizeMode="contain"
+                            />
+                          ),
+                        }}
+                      >
+                        {(props) => <AroundMeScreen {...props} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
