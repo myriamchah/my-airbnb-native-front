@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 
 import RoomInfo from "../components/RoomInfo";
@@ -34,9 +36,28 @@ export default function RoomScreen({ route }) {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <View style={{ height: 400 }}>
-          <RoomInfo room={room} fromShow={true} />
-        </View>
+        <ScrollView style={styles.scrollView}>
+          <View style={{ height: 400 }}>
+            <RoomInfo room={room} fromShow={true} />
+          </View>
+          <MapView
+            style={styles.mapView}
+            initialRegion={{
+              latitude: room.location[1],
+              longitude: room.location[0],
+              latitudeDelta: 0.1,
+              longitudeDelta: 0.1,
+            }}
+          >
+            <Marker
+              coordinate={{
+                latitude: room.location[1],
+                longitude: room.location[0],
+              }}
+              title={room.title}
+            />
+          </MapView>
+        </ScrollView>
       )}
     </SafeAreaView>
   );
@@ -46,5 +67,8 @@ const styles = StyleSheet.create({
   safeAreaView: {
     backgroundColor: "white",
     flex: 1,
+  },
+  mapView: {
+    height: "100%",
   },
 });
