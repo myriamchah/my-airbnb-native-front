@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   ActivityIndicator,
-  Text,
+  TextInput,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -50,18 +50,48 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <ScrollView>
-          <View>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <View style={styles.view}>
             <Ionicons name="person-circle-outline" size={80} color="grey" />
           </View>
+          <View style={styles.view}>
+            <TextInput
+              placeholder="email"
+              style={styles.textInput}
+              value={email}
+              onChangeText={(t) => {
+                setEmail(t);
+              }}
+            />
+
+            <TextInput
+              placeholder="username"
+              style={styles.textInput}
+              value={username}
+              onChangeText={(t) => {
+                setUsername(t);
+              }}
+            />
+
+            <TextInput
+              placeholder="Describe yourself in a few words..."
+              style={[styles.textInput, styles.textArea]}
+              multiline={true}
+              value={description}
+              onChangeText={(t) => {
+                setDescription(t);
+              }}
+            />
+          </View>
+          <Button text="Save changes" />
+          <Button
+            text="Log out"
+            onPress={() => {
+              setTokenAndId(null, null);
+            }}
+          />
         </ScrollView>
       )}
-      <Button
-        text="Log out"
-        onPress={() => {
-          setTokenAndId(null, null);
-        }}
-      />
     </SafeAreaView>
   );
 }
@@ -72,5 +102,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     flex: 1,
+  },
+  scrollView: {
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    height: "95%",
+  },
+  view: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+  },
+  textInput: {
+    borderBottomColor: "#FF6066",
+    borderBottomWidth: 1,
+    width: "70%",
+    margin: 16,
+    fontSize: 16,
+    paddingBottom: 8,
+  },
+  textArea: {
+    height: 150,
+    borderColor: "#FF6066",
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 8,
   },
 });
