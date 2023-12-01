@@ -45,6 +45,36 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
     fetchData();
   }, []);
 
+  const editProfile = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await axios.put(
+        `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update`,
+        { username, email, description },
+        {
+          headers: {
+            Authorization: "Bearer " + userToken,
+          },
+        }
+      );
+
+      if (data) {
+        setUsername(data.username);
+        setEmail(data.email);
+        setDescription(data.description);
+
+        alert("Your profile has been successfully updated");
+      } else {
+        alert("Oops! An error occurred.");
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       {isLoading ? (
@@ -83,7 +113,7 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
               }}
             />
           </View>
-          <Button text="Save changes" />
+          <Button text="Save changes" onPress={editProfile} />
           <Button
             text="Log out"
             onPress={() => {
