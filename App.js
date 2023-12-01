@@ -10,8 +10,6 @@ import AroundMeScreen from "./containers/AroundMeScreen";
 import RoomScreen from "./containers/RoomScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
-import SettingsScreen from "./containers/SettingsScreen";
-import SplashScreen from "./containers/SplashScreen";
 import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
@@ -59,10 +57,10 @@ export default function App() {
           // No token found, user isn't signed in
           <>
             <Stack.Screen name="SignIn">
-              {(props) => <SignInScreen {...{ props, setTokenAndId }} />}
+              {(props) => <SignInScreen {...props} {...{ setTokenAndId }} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {(props) => <SignUpScreen {...{ props, setTokenAndId }} />}
+              {(props) => <SignUpScreen {...props} {...{ setTokenAndId }} />}
             </Stack.Screen>
           </>
         ) : (
@@ -176,7 +174,8 @@ export default function App() {
                       >
                         {(props) => (
                           <ProfileScreen
-                            {...{ props, setTokenAndId, userToken, userId }}
+                            {...props}
+                            {...{ setTokenAndId, userToken, userId }}
                           />
                         )}
                       </Stack.Screen>

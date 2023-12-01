@@ -13,7 +13,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import HeaderLogo from "../components/HeaderLogo";
 import Button from "../components/Button";
 
-export default function SignUpScreen({ setToken, navigation }) {
+export default function SignUpScreen({ setTokenAndId, navigation }) {
   const [account, setAccount] = useState({
     email: "",
     username: "",
@@ -53,8 +53,14 @@ export default function SignUpScreen({ setToken, navigation }) {
               password: account.password,
             }
           );
-          setToken(data.token);
+
+          if (data.token && data.id) {
+            setTokenAndId(data.token, data.id);
+          } else {
+            setErrorMessage("An error occurred");
+          }
           alert("Account successfully created");
+          navigation.navigate("Home");
         } catch (error) {
           console.log(error.response);
           setErrorMessage(error.response.data.error);
@@ -143,10 +149,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollView: {
-    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "space-evenly",
-    height: "100%",
+    height: "95%",
   },
   view: {
     alignItems: "center",
