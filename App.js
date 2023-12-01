@@ -20,26 +20,27 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-  const setToken = async (token) => {
-    if (token) {
-      await AsyncStorage.setItem("userToken", token);
+  const setTokenAndId = async (token, id) => {
+    if (token && id) {
+      AsyncStorage.setItem("userToken", token);
+      AsyncStorage.setItem("userId", id);
     } else {
-      await AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("userId");
     }
-
     setUserToken(token);
+    setUserId(id);
   };
 
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      // We should also handle error for production apps
       const userToken = await AsyncStorage.getItem("userToken");
+      const userId = await AsyncStorage.getItem("userId");
 
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
       setUserToken(userToken);
+      setUserId(userId);
 
       setIsLoading(false);
     };
@@ -48,7 +49,6 @@ export default function App() {
   }, []);
 
   if (isLoading === true) {
-    // We haven't finished checking for the token yet
     return null;
   }
 
@@ -59,10 +59,10 @@ export default function App() {
           // No token found, user isn't signed in
           <>
             <Stack.Screen name="SignIn">
-              {(props) => <SignInScreen setToken={setToken} {...props} />}
+              {(props) => <SignInScreen {...{ props, setTokenAndId }} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {(props) => <SignUpScreen setToken={setToken} {...props} />}
+              {(props) => <SignUpScreen {...{ props, setTokenAndId }} />}
             </Stack.Screen>
           </>
         ) : (
@@ -116,21 +116,6 @@ export default function App() {
                       >
                         {(props) => <RoomScreen {...props} />}
                       </Stack.Screen>
-
-                      <Stack.Screen
-                        name="Profile"
-                        options={{
-                          headerTitle: () => (
-                            <Image
-                              source={require("./assets/logo-sm.png")}
-                              style={{ height: 20, width: 20 }}
-                              resizeMode="contain"
-                            />
-                          ),
-                        }}
-                      >
-                        {() => <ProfileScreen />}
-                      </Stack.Screen>
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
@@ -163,12 +148,12 @@ export default function App() {
                   )}
                 </Tab.Screen>
                 <Tab.Screen
-                  name="TabSettings"
+                  name="TabProfile"
                   options={{
-                    tabBarLabel: "Settings",
+                    tabBarLabel: "Profile",
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons
-                        name={"ios-options"}
+                        name={"ios-person-circle-outline"}
                         size={size}
                         color={color}
                       />
@@ -178,12 +163,22 @@ export default function App() {
                   {() => (
                     <Stack.Navigator>
                       <Stack.Screen
-                        name="Settings"
+                        name="Profile"
                         options={{
-                          title: "Settings",
+                          headerTitle: () => (
+                            <Image
+                              source={require("./assets/logo-sm.png")}
+                              style={{ height: 20, width: 20 }}
+                              resizeMode="contain"
+                            />
+                          ),
                         }}
                       >
-                        {() => <SettingsScreen setToken={setToken} />}
+                        {(props) => (
+                          <ProfileScreen
+                            {...{ props, setTokenAndId, userToken, userId }}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
