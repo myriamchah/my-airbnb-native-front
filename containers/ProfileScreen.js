@@ -20,6 +20,8 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [picture, setPicture] = useState(null);
+  const [updatedInfo, setUpdatedInfo] = useState(false);
+  const [updatedPic, setUpdatedPic] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +63,7 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
         alert("No picture selected");
       } else {
         setPicture(result.assets[0].uri);
+        setUpdatedPic(true);
       }
     } else {
       alert("Permission denied");
@@ -76,6 +79,7 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
         alert("No picture selected");
       } else {
         setPicture(result.assets[0].uri);
+        setUpdatedPic(true);
       }
     } else {
       alert("Permission denied");
@@ -83,66 +87,67 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
   };
 
   const editProfile = async () => {
-    try {
-      setIsLoading(true);
+    if (updatedInfo || updatedPic) {
+      try {
+        setIsLoading(true);
 
-      let formData;
-      if (picture) {
-        const type = picture.split(".").pop();
-        formData = new FormData();
-        formData.append("photo", {
-          uri: picture,
-          name: `pic.${type}`,
-          type: `image/${type}`,
-        });
+        let formData;
+        if (picture) {
+          const type = picture.split(".").pop();
+          formData = new FormData();
+          formData.append("photo", {
+            uri: picture,
+            name: `pic.${type}`,
+            type: `image/${type}`,
+          });
+        }
+
+        await axios
+          .all([
+            axios.put(
+              "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
+              { username, email, description },
+              {
+                headers: {
+                  Authorization: "Bearer " + userToken,
+                },
+              }
+            ),
+            axios.put(
+              "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
+              formData,
+              {
+                headers: {
+                  Authorization: "Bearer " + userToken,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            ),
+          ])
+          .then(
+            axios.spread((...data) => {
+              const info = data[0].data;
+              const pic = data[1].data;
+
+              if (setUpdatedInfo) {
+                setUsername(info.username);
+                setEmail(info.email);
+                setDescription(info.description);
+              }
+
+              if (setUpdatedPic) {
+                setPicture(pic.photo.url);
+              }
+            })
+          );
+
+        setIsLoading(false);
+        alert("Your profile has been successfully updated");
+        setUpdatedInfo(false);
+        setUpdatedPic(false);
+      } catch (error) {
+        console.log(error);
       }
-
-      await axios
-        .all([
-          axios.put(
-            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
-            { username, email, description },
-            {
-              headers: {
-                Authorization: "Bearer " + userToken,
-              },
-            }
-          ),
-          axios.put(
-            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
-            formData,
-            {
-              headers: {
-                Authorization: "Bearer " + userToken,
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          ),
-        ])
-        .then(
-          axios.spread((...data) => {
-            const info = data[0];
-            const pic = data[1];
-
-            console.log(info.data);
-            console.log(pic.data);
-          })
-        );
-
-      // if (data) {
-      //   setUsername(data.username);
-      //   setEmail(data.email);
-      //   setDescription(data.description);
-      //   data.photo && setPicture(data.photo.url);
-
-      //   alert("Your profile has been successfully updated");
-      // } else {
-      //   alert("Oops! An error occurred.");
-      // }
-
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -184,6 +189,7 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
               value={email}
               onChangeText={(t) => {
                 setEmail(t);
+                setUpdatedInfo(true);
               }}
             />
 
@@ -193,6 +199,7 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
               value={username}
               onChangeText={(t) => {
                 setUsername(t);
+                setUpdatedInfo(true);
               }}
             />
 
@@ -203,6 +210,7 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
               value={description}
               onChangeText={(t) => {
                 setDescription(t);
+                setUpdatedInfo(true);
               }}
             />
           </View>
