@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import {
   ActivityIndicator,
+  Image,
   TextInput,
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
-
+import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 
 export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
@@ -31,10 +33,11 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
           }
         );
 
-        console.log(data);
+        // console.log(data);
         setUsername(data.username);
         setEmail(data.email);
         setDescription(data.description);
+        data.photo && setPicture(data.photo.url);
 
         setIsLoading(false);
       } catch (error) {
@@ -45,29 +48,97 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
     fetchData();
   }, []);
 
+  const choosePic = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status === "granted") {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+      });
+
+      if (result.canceled) {
+        alert("No picture selected");
+      } else {
+        setPicture(result.assets[0].uri);
+      }
+    } else {
+      alert("Permission denied");
+    }
+  };
+
+  const takePic = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      const result = await ImagePicker.launchCameraAsync();
+
+      if (result.canceled === true) {
+        alert("No picture selected");
+      } else {
+        setPicture(result.assets[0].uri);
+      }
+    } else {
+      alert("Permission denied");
+    }
+  };
+
   const editProfile = async () => {
     try {
       setIsLoading(true);
 
-      const { data } = await axios.put(
-        `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update`,
-        { username, email, description },
-        {
-          headers: {
-            Authorization: "Bearer " + userToken,
-          },
-        }
-      );
-
-      if (data) {
-        setUsername(data.username);
-        setEmail(data.email);
-        setDescription(data.description);
-
-        alert("Your profile has been successfully updated");
-      } else {
-        alert("Oops! An error occurred.");
+      let formData;
+      if (picture) {
+        const type = picture.split(".").pop();
+        formData = new FormData();
+        formData.append("photo", {
+          uri: picture,
+          name: `pic.${type}`,
+          type: `image/${type}`,
+        });
       }
+
+      await axios
+        .all([
+          axios.put(
+            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
+            { username, email, description },
+            {
+              headers: {
+                Authorization: "Bearer " + userToken,
+              },
+            }
+          ),
+          axios.put(
+            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
+            formData,
+            {
+              headers: {
+                Authorization: "Bearer " + userToken,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          ),
+        ])
+        .then(
+          axios.spread((...data) => {
+            const info = data[0];
+            const pic = data[1];
+
+            console.log(info.data);
+            console.log(pic.data);
+          })
+        );
+
+      // if (data) {
+      //   setUsername(data.username);
+      //   setEmail(data.email);
+      //   setDescription(data.description);
+      //   data.photo && setPicture(data.photo.url);
+
+      //   alert("Your profile has been successfully updated");
+      // } else {
+      //   alert("Oops! An error occurred.");
+      // }
 
       setIsLoading(false);
     } catch (error) {
@@ -81,8 +152,30 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
         <ActivityIndicator />
       ) : (
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <View style={styles.view}>
-            <Ionicons name="person-circle-outline" size={80} color="grey" />
+          <View style={[styles.view, styles.picView]}>
+            <TouchableOpacity>
+              {picture ? (
+                <Image
+                  source={{ uri: picture }}
+                  style={styles.picture}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Ionicons
+                  name="person-circle-outline"
+                  size={120}
+                  color="grey"
+                />
+              )}
+            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={choosePic}>
+                <Ionicons name="images-outline" size={32} color="grey" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={takePic}>
+                <Ionicons name="camera-outline" size={32} color="grey" />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.view}>
             <TextInput
@@ -142,6 +235,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+  },
+  picView: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  picture: {
+    height: 120,
+    width: 120,
+    borderRadius: 60,
   },
   textInput: {
     borderBottomColor: "#FF6066",
