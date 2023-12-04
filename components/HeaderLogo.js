@@ -1,14 +1,14 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Platform, StyleSheet, Text, View } from "react-native";
 
-const HeaderLogo = ({ text }) => {
+const HeaderLogo = ({ text, style }) => {
   return (
-    <View style={styles.view}>
+    <View style={Platform.OS === "android" && styles.headerCentered}>
       <Image
         source={require("../assets/logo-sm.png")}
-        style={styles.logo}
+        style={style}
         resizeMode="contain"
       />
-      <Text style={styles.title}>{text}</Text>
+      {text && <Text style={styles.title}>{text}</Text>}
     </View>
   );
 };
@@ -16,10 +16,6 @@ const HeaderLogo = ({ text }) => {
 export default HeaderLogo;
 
 const styles = StyleSheet.create({
-  logo: {
-    height: 140,
-    width: 140,
-  },
   title: {
     color: "gray",
     fontWeight: "600",
@@ -27,9 +23,9 @@ const styles = StyleSheet.create({
     margin: 24,
     textAlign: "center",
   },
-  view: {
+  headerCentered: {
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: "96%",
   },
 });

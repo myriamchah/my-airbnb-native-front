@@ -10,7 +10,7 @@ import AroundMeScreen from "./containers/AroundMeScreen";
 import RoomScreen from "./containers/RoomScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
-import { Image } from "react-native";
+import HeaderLogo from "./components/HeaderLogo";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -89,10 +89,11 @@ export default function App() {
                         name="Home"
                         options={{
                           headerTitle: () => (
-                            <Image
-                              source={require("./assets/logo-sm.png")}
-                              style={{ height: 20, width: 20 }}
-                              resizeMode="contain"
+                            <HeaderLogo
+                              style={{
+                                height: 20,
+                                width: 20,
+                              }}
                             />
                           ),
                         }}
@@ -104,10 +105,11 @@ export default function App() {
                         name="Room"
                         options={{
                           headerTitle: () => (
-                            <Image
-                              source={require("./assets/logo-sm.png")}
-                              style={{ height: 20, width: 20 }}
-                              resizeMode="contain"
+                            <HeaderLogo
+                              style={{
+                                height: 20,
+                                width: 20,
+                              }}
                             />
                           ),
                         }}
@@ -132,10 +134,11 @@ export default function App() {
                         name="AroundMe"
                         options={{
                           headerTitle: () => (
-                            <Image
-                              source={require("./assets/logo-sm.png")}
-                              style={{ height: 20, width: 20 }}
-                              resizeMode="contain"
+                            <HeaderLogo
+                              style={{
+                                height: 20,
+                                width: 20,
+                              }}
                             />
                           ),
                         }}
@@ -164,10 +167,11 @@ export default function App() {
                         name="Profile"
                         options={{
                           headerTitle: () => (
-                            <Image
-                              source={require("./assets/logo-sm.png")}
-                              style={{ height: 20, width: 20 }}
-                              resizeMode="contain"
+                            <HeaderLogo
+                              style={{
+                                height: 20,
+                                width: 20,
+                              }}
                             />
                           ),
                         }}

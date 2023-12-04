@@ -76,7 +76,13 @@ export default function SignUpScreen({ setTokenAndId, navigation }) {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollView}>
-        <HeaderLogo text="Sign up" />
+        <HeaderLogo
+          text="Sign up"
+          style={{
+            height: 140,
+            width: 140,
+          }}
+        />
 
         <View style={styles.view}>
           <TextInput
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
   scrollView: {
     alignItems: "center",
     justifyContent: "space-evenly",
-    height: "95%",
+    minHeight: "95%",
   },
   view: {
     alignItems: "center",

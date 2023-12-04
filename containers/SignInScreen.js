@@ -46,7 +46,13 @@ export default function SignInScreen({ setTokenAndId, navigation }) {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollView}>
-        <HeaderLogo text="Sign in" />
+        <HeaderLogo
+          text="Sign in"
+          style={{
+            height: 140,
+            width: 140,
+          }}
+        />
 
         <View style={styles.view}>
           <TextInput
