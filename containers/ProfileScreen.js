@@ -35,7 +35,6 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
           }
         );
 
-        // console.log(data);
         setUsername(data.username);
         setEmail(data.email);
         setDescription(data.description);
@@ -88,11 +87,11 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
 
   const editProfile = async () => {
     if (updatedInfo || updatedPic) {
-      try {
-        setIsLoading(true);
+      setIsLoading(true);
 
-        let formData;
-        if (picture) {
+      if (updatedPic) {
+        try {
+          let formData;
           const type = picture.split(".").pop();
           formData = new FormData();
           formData.append("photo", {
@@ -100,54 +99,56 @@ export default function ProfileScreen({ setTokenAndId, userToken, userId }) {
             name: `pic.${type}`,
             type: `image/${type}`,
           });
+
+          const { data } = await axios.put(
+            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
+            formData,
+            {
+              headers: {
+                Authorization: "Bearer " + userToken,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (data) {
+            setPicture(data.photo.url);
+            alert("Your photo has been successfully updated");
+          } else {
+            alert("Oops! An error occurred and your picture wasn't saved.");
+          }
+        } catch (error) {
+          console.log(error);
         }
+      }
 
-        await axios
-          .all([
-            axios.put(
-              "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
-              { username, email, description },
-              {
-                headers: {
-                  Authorization: "Bearer " + userToken,
-                },
-              }
-            ),
-            axios.put(
-              "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
-              formData,
-              {
-                headers: {
-                  Authorization: "Bearer " + userToken,
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            ),
-          ])
-          .then(
-            axios.spread((...data) => {
-              const info = data[0].data;
-              const pic = data[1].data;
-
-              if (setUpdatedInfo) {
-                setUsername(info.username);
-                setEmail(info.email);
-                setDescription(info.description);
-              }
-
-              if (setUpdatedPic) {
-                setPicture(pic.photo.url);
-              }
-            })
+      if (updatedInfo) {
+        try {
+          const { data } = await axios.put(
+            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
+            { username, email, description },
+            {
+              headers: {
+                Authorization: "Bearer " + userToken,
+              },
+            }
           );
 
-        setIsLoading(false);
-        alert("Your profile has been successfully updated");
-        setUpdatedInfo(false);
-        setUpdatedPic(false);
-      } catch (error) {
-        console.log(error);
+          if (data) {
+            setUsername(data.username);
+            setEmail(data.email);
+            setDescription(data.description);
+            alert("Your profile has been successfully updated");
+          } else {
+            alert("Oops! An error occurred and your info weren't saved.");
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
+
+      setIsLoading(false);
+      setUpdatedInfo(false);
+      setUpdatedPic(false);
     }
   };
 
